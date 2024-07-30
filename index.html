@@ -427,6 +427,8 @@
         let validatedArea = 0; // Área validada
         let createdTableName = null;
         let legendItems = {};
+        let userMarker = null;
+        let watchId = null;
 
         const colorPalette = ['#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#800000', '#008000', '#000080', '#808000', '#800080', '#008080', '#c0c0c0', '#ff6347', '#40e0d0', '#ee82ee', '#ff0000']; // Alterado para mover o vermelho para o final
 
@@ -899,21 +901,25 @@
         window.addEventListener('load', updateHeaderImage); // Atualiza a imagem ao carregar a página
 
         // Função de navegação
-        function showPosition(position) {
+        function updatePosition(position) {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
             const accuracy = position.coords.accuracy;
 
-            const userMarker = L.marker([lat, lon], {
-                icon: L.divIcon({
-                    className: 'navigation-icon',
-                    html: '<div style="background-color: darkgreen; width: 10px; height: 10px; border-radius: 50%;"></div>'
-                })
-            }).addTo(map);
+            if (userMarker) {
+                userMarker.setLatLng([lat, lon]);
+            } else {
+                userMarker = L.marker([lat, lon], {
+                    icon: L.divIcon({
+                        className: 'navigation-icon',
+                        html: '<div style="background-color: darkgreen; width: 10px; height: 10px; border-radius: 50%;"></div>'
+                    })
+                }).addTo(map);
+            }
 
             map.setView([lat, lon], 16);
 
-            alert(`Localização obtida com sucesso!\nLatitude: ${lat}\nLongitude: ${lon}\nPrecisão: ${accuracy} metros.`);
+            console.log(`Localização atualizada!\nLatitude: ${lat}\nLongitude: ${lon}\nPrecisão: ${accuracy} metros.`);
         }
 
         function showError(error) {
@@ -933,15 +939,33 @@
             }
         }
 
-        function getLocation() {
+        function startTracking() {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition, showError);
+                watchId = navigator.geolocation.watchPosition(updatePosition, showError, { enableHighAccuracy: true });
             } else {
                 alert("Geolocalização não é suportada por este navegador.");
             }
         }
 
-        document.getElementById('toggle-navigation').addEventListener('click', getLocation);
+        function stopTracking() {
+            if (navigator.geolocation && watchId !== null) {
+                navigator.geolocation.clearWatch(watchId);
+                watchId = null;
+                if (userMarker) {
+                    map.removeLayer(userMarker);
+                    userMarker = null;
+                }
+                alert("Rastreamento de localização parado.");
+            }
+        }
+
+        document.getElementById('toggle-navigation').addEventListener('click', function() {
+            if (watchId === null) {
+                startTracking();
+            } else {
+                stopTracking();
+            }
+        });
     </script>
 </body>
 </html>
