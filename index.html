@@ -112,9 +112,9 @@
         }
 
         #menu button {
-            width: 80px;
+            width: 75px;
             height: 30px;
-            margin: 3px 0;
+            margin: 5px 0;
             background-color: #8F8F8F;
         }
 
@@ -327,6 +327,23 @@
             font-size: 12px;
             color: black;
         }
+
+        /* Estilos para o popup */
+        .popup {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            text-align: center;
+        }
+
+        .popup button {
+            margin: 10px;
+        }
     </style>
 </head>
 <body>
@@ -399,7 +416,7 @@
                             Área Validada: 0 ha
                         </div>
                         <div class="feature-info" id="total-volume">
-                            Quantidade Total: 0
+                            Volume Total: 0
                         </div>
                     </div>
                 </div>
@@ -782,6 +799,7 @@
             });
 
             calculateValidatedArea(); // Atualiza a área validada após a exportação
+            showExportSuccessPopup();
         }
 
         document.getElementById('export-button').addEventListener('click', exportToGeoJSON);
@@ -808,6 +826,7 @@
             try {
                 shpwrite.download(geojson, { folder: 'shapefiles', types: { point: 'points', polygon: 'polygons', line: 'lines' } });
                 console.log("Tentativa de download do shapefile realizada.");
+                showExportSuccessPopup();
             } catch (error) {
                 console.error("Erro ao gerar o shapefile:", error);
                 alert("Erro ao gerar o shapefile: " + error.message);
@@ -863,6 +882,7 @@
             });
 
             calculateValidatedArea(); // Atualiza a área validada após a exportação
+            showExportSuccessPopup();
         }
 
         document.getElementById('export-kml-button').addEventListener('click', exportToKML);
@@ -966,6 +986,33 @@
                 stopTracking();
             }
         });
+
+        function showExportSuccessPopup() {
+            const popup = document.createElement('div');
+            popup.className = 'popup';
+            popup.innerHTML = `
+                <p>Exportação realizada com sucesso!</p>
+                <p>Como prefere continuar?</p>
+                <div class="button-group">
+                    <button id="continue-button">Continuar operação</button>
+                    <button id="new-operation-button">Iniciar nova operação</button>
+                    <button id="home-button">Página inicial</button>
+                </div>
+            `;
+            document.body.appendChild(popup);
+
+            document.getElementById('continue-button').addEventListener('click', function() {
+                document.body.removeChild(popup);
+            });
+
+            document.getElementById('new-operation-button').addEventListener('click', function() {
+                location.reload();
+            });
+
+            document.getElementById('home-button').addEventListener('click', function() {
+                window.location.href = "https://www.agroxeque.com.br/operacao";
+            });
+        }
     </script>
 </body>
 </html>
