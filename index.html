@@ -114,7 +114,7 @@
 
         #menu button {
             width: 80px;
-            height: 30px;
+            height: 27px;
             margin: 3px 0;
             background-color: #8F8F8F;
             border-radius: 5px; /* Adiciona arredondamento */
@@ -402,7 +402,7 @@
                 <option value="vari">VARI</option>
             </select>
             <label for="transparency">Transparência:</label>
-            <input type="range" id="transparency" min="0" max="95" value="0">
+            <input type="range" id="transparency" min="0" max="100" value="0">
         </div>
         <div id="menu">
             <button id="toggle-prescricao">☰ Painel</button>
@@ -571,7 +571,7 @@
                     totalVolume += layer.feature.properties.userValue * layer.feature.properties.area;
                 }
             });
-            document.getElementById('total-volume').innerText = 'Volume Total: ' + totalVolume.toFixed(2);
+            document.getElementById('total-volume').innerText = 'Quantidade Total: ' + totalVolume.toFixed(2);
         }
 
         fetch('camadas/grade.geojson')
