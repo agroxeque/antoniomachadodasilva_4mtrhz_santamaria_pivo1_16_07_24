@@ -53,7 +53,7 @@
             width: 100%;
         }
 
-        #cabeçalho-direito img {
+        #cabeçalho-direito a img {
             width: 148px;
             height: 115px;
         }
@@ -269,6 +269,20 @@
             text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
         }
 
+        .collapse-arrow {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 20px;
+            color: black;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .collapsed {
+            transform: rotate(180deg);
+        }
+
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
@@ -345,6 +359,15 @@
         .popup button {
             margin: 10px;
         }
+
+        /* Estilos para cursor pointer em elementos clicáveis */
+        #cabeçalho-direito a, button {
+            cursor: pointer;
+        }
+
+        .navigation-icon {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -353,7 +376,9 @@
             <img src="imagens/cabecalho_esquerdo_1290.png" id="img-cabecalho-esquerdo">
         </div>
         <div id="cabeçalho-direito">
-            <img src="imagens/logo_cabecalho.png">
+            <a href="https://www.agroxeque.com.br/operacao" target="_blank">
+                <img src="imagens/logo_cabecalho.png">
+            </a>
         </div>
     </div>
     <div id="produto-tarefa-menu-container">
@@ -382,6 +407,7 @@
         <div id="sidebar-prescricao" class="sidebar">
             <div class="sidebar-header">
                 Operação:<br><span id="sidebar-title"></span>
+                <span class="collapse-arrow">➔</span>
             </div>
             <div class="sidebar-content">
                 <div id="prescricao">
@@ -1014,6 +1040,13 @@
                 window.location.href = "https://www.agroxeque.com.br/operacao";
             });
         }
+
+        // Função para colapsar/recolher o sidebar
+        document.querySelector('.collapse-arrow').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar-prescricao');
+            sidebar.classList.toggle('open');
+            this.classList.toggle('collapsed');
+        });
     </script>
 </body>
 </html>
